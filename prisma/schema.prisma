@@ -12,3 +12,78 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Gender {
+  MALE
+  FAMALE
+}
+
+enum Type {
+  USER
+  DOCTOR
+}
+
+model User {
+  id         String   @id @default(cuid())
+  phone      String   @unique
+  f_name     String
+  l_name     String
+  gender     Gender   @default(MALE)
+  age        Int
+  url        Image    @relation(fields: [image_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  image_id   String
+
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
+}
+
+model Category {
+  id         String   @id @default(cuid())
+  name       String
+  url        Image    @relation(fields: [image_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  image_id   String
+}
+
+model Image {
+  id         String     @id @default(cuid())
+  url        String
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  Category   Category[]
+  User       User[]
+  Doctor     Doctor[]
+}
+
+model Doctor {
+  id         String   @id @default(cuid())
+  f_name     String
+  l_name     String
+  url        Image    @relation(fields: [image_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  image_id   String
+
+  sentMessages     Message[] @relation("DoctorSentMessages")
+  receivedMessages Message[] @relation("DoctorReceivedMessages")
+}
+
+model Message {
+  id      String @id @default(cuid())
+  content String
+
+  sentAt       DateTime @default(now())
+  readAt       Boolean  @default(false)
+  senderId     String
+  senderType   Type
+  receiverId   String
+  receiverType Type
+
+  senderUser     User?   @relation("SentMessages", fields: [senderId], references: [id], map: "senderUser")
+  receiverUser   User?   @relation("ReceivedMessages", fields: [receiverId], references: [id], map: "receiverUser")
+  senderDoctor   Doctor? @relation("DoctorSentMessages", fields: [senderId], references: [id])
+  receiverDoctor Doctor? @relation("DoctorReceivedMessages", fields: [receiverId], references: [id])
+}

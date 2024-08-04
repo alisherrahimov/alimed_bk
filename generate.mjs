@@ -13,7 +13,7 @@ if (checkF) {
   console.error(`Resource ${resourceName} already exists.`);
   process.exit(1);
 } else {
-  const command = `nest g co ${resourceName} && nest g mo ${resourceName} && nest g s ${resourceName}`;
+  const command = `nest g co ${resourceName} && nest g mo ${resourceName} && nest g s ${resourceName} && mkdir src/${resourceName}/schema && touch src/${resourceName}/schema/${resourceName}.schema.ts`;
   exec(command, (err, stdout, stderr) => {
     if (err) {
       console.error(`Error: ${err.message}`);
