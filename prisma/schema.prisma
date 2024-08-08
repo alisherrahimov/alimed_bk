@@ -18,31 +18,25 @@ enum Gender {
   FAMALE
 }
 
-enum Type {
-  USER
-  DOCTOR
-}
-
 model User {
-  id         String   @id @default(cuid())
-  phone      String   @unique
-  f_name     String
-  l_name     String
-  gender     Gender   @default(MALE)
-  age        Int
-  url        Image    @relation(fields: [image_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  image_id   String
-
-  sentMessages     Message[] @relation("SentMessages")
-  receivedMessages Message[] @relation("ReceivedMessages")
+  id         String    @id @default(cuid())
+  phone      String    @unique
+  f_name     String?
+  l_name     String?
+  gender     Gender?    @default(MALE)
+  age        Int?
+  url        Image?    @relation(fields: [image_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  image_id   String?
+  Message    Message[]
+  Review     Review[]
 }
 
 model Category {
   id         String   @id @default(cuid())
   name       String
-  url        Image    @relation(fields: [image_id], references: [id])
+  url        Image?   @relation(fields: [image_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   image_id   String
@@ -59,31 +53,40 @@ model Image {
 }
 
 model Doctor {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   f_name     String
   l_name     String
-  url        Image    @relation(fields: [image_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  image_id   String
-
-  sentMessages     Message[] @relation("DoctorSentMessages")
-  receivedMessages Message[] @relation("DoctorReceivedMessages")
+  url        Image?    @relation(fields: [image_id], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  image_id   String?
+  experience Int
+  Message    Message[]
+  Review     Review[]
 }
 
 model Message {
-  id      String @id @default(cuid())
-  content String
-
-  sentAt       DateTime @default(now())
-  readAt       Boolean  @default(false)
-  senderId     String
-  senderType   Type
-  receiverId   String
-  receiverType Type
-
-  senderUser     User?   @relation("SentMessages", fields: [senderId], references: [id], map: "senderUser")
-  receiverUser   User?   @relation("ReceivedMessages", fields: [receiverId], references: [id], map: "receiverUser")
-  senderDoctor   Doctor? @relation("DoctorSentMessages", fields: [senderId], references: [id])
-  receiverDoctor Doctor? @relation("DoctorReceivedMessages", fields: [receiverId], references: [id])
+  id        String   @id @default(cuid())
+  content   String
+  sentAt    DateTime @default(now())
+  readAt    Boolean  @default(false)
+  user_id   User     @relation(fields: [userId], references: [id])
+  doctor_id Doctor   @relation(fields: [doctorId], references: [id])
+  userId    String
+  doctorId  String
 }
+
+model Review {
+  id         String   @id @default(cuid())
+  content    String
+  rate       Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user_id    User     @relation(fields: [userId], references: [id])
+  doctor_id  Doctor   @relation(fields: [doctorId], references: [id])
+  userId     String
+  doctorId   String
+}
+
+// clzko7hgq0000wcmkvxjrq65a
+// clzko885f0001wcmkwuzv3swi

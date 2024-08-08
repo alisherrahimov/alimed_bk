@@ -1,17 +1,8 @@
-import { Type } from '@prisma/client';
 import * as yup from 'yup';
 
 const sendMessagesSchema = yup.object().shape({
-  senderType: yup
-    .mixed<Type>()
-    .oneOf(Object.values(Type))
-    .required('Sender type is required'),
-  senderId: yup.string().required('Sender id is required'),
-  receiverType: yup
-    .mixed<Type>()
-    .oneOf(Object.values(Type))
-    .required('Reciver type is required'),
-  receiverId: yup.string().required('Receiver id is required'),
+  user_id: yup.string().required('user_id is required'),
+  doctor_id: yup.string().required('doctor_id is required'),
   content: yup.string().required('Content is required'),
 });
 
